@@ -1,53 +1,52 @@
 import {FunctionalComponent, h} from 'preact';
+import {useEffect, useState} from 'preact/compat';
 
 interface Quote {
   author: string;
   text: string;
-  season: string;
-  episode: string;
+  season: string | null;
+  episode: string | null;
 }
 
-const QUOTES: Quote[] = [
-  {
-    author: 'Bernd Stromberg',
-    text: 'Büro ist Krieg und Krieg ist immer ungerecht.',
-    season: '1',
-    episode: '1',
-  },
-  {
-    author: 'Bernd Stromberg',
-    text: 'Ich krieg doch auch beides hin: Job und Weiber!',
-    season: '2',
-    episode: '2',
-  },
-  {
-    author: 'Bernd Stromberg',
-    text: 'Na, ja gut. Man schneidet sich ja nicht gleich den Kopf ab, nur weil man `n paar Schuppen hat.',
-    season: '3',
-    episode: '3',
-  },
-  {
-    author: 'Ulf',
-    text: 'Männer tragen bei Hochzeiten nen unbequemen Anzug und keine Jogginghose, weil man gleich merken soll, dass man sich in `ner Ehe nicht wohlfühlt.',
-    season: '4',
-    episode: '4',
-  },
-  {
-    author: 'Bernd Stromberg',
-    text: 'Der perfekte Flirt, der ist so subtil, dass die Frau da überhaupt gar nix von mitkriegt. Sag ich mal.',
-    season: '5',
-    episode: '5',
-  },
-];
+interface ApiQuoteResponse {
+  quote: string;
+  character: {
+    name: string;
+  } | null;
+  episode: {
+    season: number;
+    episode: number;
+  } | null;
+}
+
+const BASE_API = 'https://stromberg-api.de';
 
 const Quote: FunctionalComponent = () => {
-  const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  const [quote, setQuote] = useState<Quote | undefined>(undefined);
+
+  useEffect(() => {
+    fetch(`${BASE_API}/api/quotes/random`)
+      .then((res) => res.json())
+      .then((resp: ApiQuoteResponse) => {
+        setQuote({
+          author: resp?.character?.name || 'Bernd Stromberg',
+          text: resp?.quote,
+          season: resp?.episode === null ? null : resp.episode.season.toString(),
+          episode: resp?.episode === null ? null : resp.episode.episode.toString(),
+        });
+      });
+  }, []);
 
   return (
-    <div className="h-screen w-screen px-20 md:px-40 lg:px-52 flex flex-col justify-center md:items-center md:text-center text-white">
-      <div className="text-3xl md:text-4xl">{quote.text}</div>
-      <div className="pt-12 text-sm md:text-base">{quote.author}</div>
-      <div className="text-xs md:text-base">(S {quote.season}, E {quote.episode})</div>
+    <div
+      className="h-screen w-screen px-20 md:px-40 lg:px-52 flex flex-col justify-center md:items-center md:text-center text-white">
+      <div className="text-3xl md:text-4xl">{quote?.text}</div>
+      <div className="pt-12 text-sm md:text-base">{quote?.author}</div>
+      <div className="text-xs md:text-base">
+        {quote?.season && quote?.episode &&
+          <span>(S {quote?.season}, E {quote?.episode})</span>
+        }
+      </div>
     </div>
   );
 };
