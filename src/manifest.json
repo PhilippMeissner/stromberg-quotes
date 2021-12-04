@@ -1,6 +1,6 @@
 {
-  "name": "quotes",
-  "short_name": "quotes",
+  "name": "stromberg-quotes",
+  "short_name": "stromberg-quotes",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

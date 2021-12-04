@@ -1,7 +1,11 @@
 {
   "private": true,
-  "name": "quotes",
-  "version": "0.0.0",
+  "name": "stromberg-quotes",
+  "version": "0.0.1",
+  "author": {
+    "name": "Philipp Meissner",
+    "url": "https://philippmeissner.dev"
+  },
   "license": "MIT",
   "scripts": {
     "build": "preact build",
