@@ -15,7 +15,7 @@ const App: FunctionalComponent = () => {
       <div className="bg-gradient-to-b from-gray-800 to-gray-900">
         <Router>
           <Route path="/" component={Quote}/>
-          <Route path="/impressum/" component={Imprint}/>
+          <Route path="/impressum" component={Imprint}/>
           <Route path="/datenschutz" component={Gdpr}/>
         </Router>
         <Footer/>
