@@ -39,8 +39,8 @@ const Quote: FunctionalComponent = () => {
 
   return (
     <div
-      className="h-screen w-screen px-20 md:px-40 lg:px-52 flex flex-col justify-center md:items-center md:text-center text-white">
-      <div className="text-3xl md:text-4xl">{quote?.text}</div>
+      className="h-screen w-screen p-20 md:p-40 lg:p-52 flex flex-col justify-center md:items-center md:text-center text-white">
+      <div className="text-3xl md:text-4xl break-words overflow-y-auto">{quote?.text}</div>
       <div className="pt-12 text-sm md:text-base">{quote?.author}</div>
       <div className="text-xs md:text-base">
         {quote?.season && quote?.episode &&
