@@ -19,7 +19,7 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const QUOTE_API_URL = process.env.QUOTE_API_URL || 'https://stromberg-api.de';
+const QUOTE_API_URL = process.env.PREACT_APP_QUOTE_API_URL;
 
 const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
@@ -43,8 +43,8 @@ const Quote: FunctionalComponent = () => {
       <div className="text-3xl md:text-4xl break-words">{quote?.text}</div>
       <div className="pt-12 text-sm md:text-base">{quote?.author}</div>
       <div className="text-xs md:text-base">
-        {quote?.season && quote?.episode &&
-          <span>(S {quote?.season}, E {quote?.episode})</span>
+        {quote?.season && quote.episode &&
+          <span>(S {quote.season}, E {quote.episode})</span>
         }
       </div>
     </div>
