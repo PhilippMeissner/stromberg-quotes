@@ -19,13 +19,13 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const BASE_API = 'https://stromberg-api.de';
+const QUOTE_API_URL = process.env.QUOTE_API_URL || 'https://stromberg-api.de';
 
 const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
-    fetch(`${BASE_API}/api/quotes/random`)
+    fetch(`${QUOTE_API_URL}/api/quotes/random`)
       .then((res) => res.json())
       .then((resp: ApiQuoteResponse) => {
         setQuote({
