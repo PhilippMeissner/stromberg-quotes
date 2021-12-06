@@ -2,7 +2,7 @@ import {FunctionalComponent, h} from 'preact';
 
 const Viewport: FunctionalComponent = () => {
   return (
-    <span className={"absolute top-6 right-4 text-gray-400"}>
+    <span className={"absolute top-6 left-4 text-gray-400"}>
       <pre className="sm:hidden">base</pre>
       <pre className="hidden sm:block md:hidden">sm</pre>
       <pre className="hidden md:block lg:hidden">md</pre>
