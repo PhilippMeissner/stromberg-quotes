@@ -10,7 +10,7 @@ const Footer: FunctionalComponent = () => {
       <Link activeClassName={'font-bold'} href="/impressum">
         Impressum
       </Link>
-      <Link activeClassName={'font-bold'} href={'/datenschutz'}>
+      <Link activeClassName={'font-bold'} href="/datenschutz">
         Datenschutz
       </Link>
     </div>

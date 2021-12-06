@@ -19,13 +19,13 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const BASE_API = 'https://stromberg-api.de';
+const QUOTE_API_URL = process.env.PREACT_APP_QUOTE_API_URL;
 
 const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
-    fetch(`${BASE_API}/api/quotes/random`)
+    fetch(`${QUOTE_API_URL}/api/quotes/random`)
       .then((res) => res.json())
       .then((resp: ApiQuoteResponse) => {
         setQuote({
@@ -40,11 +40,11 @@ const Quote: FunctionalComponent = () => {
   return (
     <div
       className="min-h-screen w-screen p-20 md:p-40 lg:p-52 flex flex-col justify-center md:items-center md:text-center text-white">
-      <div className="text-3xl md:text-4xl break-words">{quote?.text}</div>
+      <div className="text-2xl md:text-4xl break-words">{quote?.text}</div>
       <div className="pt-12 text-sm md:text-base">{quote?.author}</div>
       <div className="text-xs md:text-base">
-        {quote?.season && quote?.episode &&
-          <span>(S {quote?.season}, E {quote?.episode})</span>
+        {quote?.season && quote.episode &&
+          <span>(S {quote.season}, E {quote.episode})</span>
         }
       </div>
     </div>
