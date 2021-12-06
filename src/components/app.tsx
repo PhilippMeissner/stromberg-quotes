@@ -12,7 +12,7 @@ const App: FunctionalComponent = () => {
   return (
     <div id="preact_root">
       {!isProduction && <Viewport/>}
-      <div className="bg-gradient-to-b from-gray-800 to-gray-900">
+      <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
         <Router>
           <Route path="/" component={Quote}/>
           <Route path="/impressum" component={Imprint}/>
