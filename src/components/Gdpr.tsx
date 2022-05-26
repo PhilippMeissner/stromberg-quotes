@@ -2,7 +2,7 @@ import {FunctionalComponent, h} from 'preact';
 import {useEffect} from 'preact/compat';
 
 const Gdpr: FunctionalComponent = () => {
-  useEffect(() => window.scrollTo(0, 0), []);
+  useEffect(() => window.scrollTo({top: 0, behavior: 'smooth'}), []);
 
   return (
     <div className={"text-white p-20"}>
