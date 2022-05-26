@@ -1,10 +1,8 @@
 import {FunctionalComponent, h} from 'preact';
 import Router, {Route} from 'preact-router';
+import {APP_ROUTES} from '../routes';
 import Badge from './Badge';
 import Footer from './Footer';
-import Gdpr from './Gdpr';
-import Imprint from './Imprint';
-import Quote from './Quote';
 import Viewport from './Viewport';
 
 const App: FunctionalComponent = () => {
@@ -16,9 +14,9 @@ const App: FunctionalComponent = () => {
       <Badge/>
       <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
         <Router>
-          <Route path="/" component={Quote}/>
-          <Route path="/impressum" component={Imprint}/>
-          <Route path="/datenschutz" component={Gdpr}/>
+          <Route path={`/${APP_ROUTES.home.routeSlug}`} component={APP_ROUTES.home.component}/>
+          <Route path={`/${APP_ROUTES.imprint.routeSlug}`} component={APP_ROUTES.imprint.component}/>
+          <Route path={`/${APP_ROUTES.gdpr.routeSlug}`} component={APP_ROUTES.gdpr.component}/>
         </Router>
         <Footer/>
       </div>
