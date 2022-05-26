@@ -25,6 +25,8 @@ const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     fetch(`${QUOTE_API_URL}/api/quotes/random`)
       .then((res) => res.json())
       .then((resp: ApiQuoteResponse) => {
