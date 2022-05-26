@@ -1,6 +1,9 @@
 import {FunctionalComponent, h} from 'preact';
+import {useEffect} from 'preact/compat';
 
 const Imprint: FunctionalComponent = () => {
+  useEffect(() => window.scrollTo(0, 0), []);
+
   return (
     <div className={"text-white p-20 h-screen"}>
       <h1>Impressum</h1>
