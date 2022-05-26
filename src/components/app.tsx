@@ -10,15 +10,15 @@ const App: FunctionalComponent = () => {
 
   return (
     <div id="preact_root" className={"overflow-hidden relative"}>
-      {!isProduction && <Viewport/>}
-      <Badge/>
+      {!isProduction && <Viewport />}
+      <Badge />
       <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
         <Router>
-          <Route path={`/${APP_ROUTES.home.routeSlug}`} component={APP_ROUTES.home.component}/>
-          <Route path={`/${APP_ROUTES.imprint.routeSlug}`} component={APP_ROUTES.imprint.component}/>
-          <Route path={`/${APP_ROUTES.gdpr.routeSlug}`} component={APP_ROUTES.gdpr.component}/>
+          <Route path={`/${APP_ROUTES.home.routeSlug}`} component={APP_ROUTES.home.component} />
+          <Route path={`/${APP_ROUTES.imprint.routeSlug}`} component={APP_ROUTES.imprint.component} />
+          <Route path={`/${APP_ROUTES.gdpr.routeSlug}`} component={APP_ROUTES.gdpr.component} />
         </Router>
-        <Footer/>
+        <Footer />
       </div>
     </div>
   );
