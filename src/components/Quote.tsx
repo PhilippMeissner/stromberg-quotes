@@ -26,7 +26,7 @@ const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({top: 0, behavior: 'smooth'});
 
     if (!QUOTE_API_URL) throw new Error('PREACT_APP_QUOTE_API_URL not defined.');
 
