@@ -1,6 +1,6 @@
 import {FunctionalComponent, h} from 'preact';
 import Router, {Route} from 'preact-router';
-import {useCallback, useEffect, useState} from 'preact/compat';
+import {useEffect, useState} from 'preact/compat';
 import {APP_ROUTES} from '../routes';
 import Badge from './Badge';
 import Footer from './Footer';
@@ -12,23 +12,18 @@ const App: FunctionalComponent = () => {
   const isProduction = process.env.NODE_ENV === 'production';
   const [scrollPos, setScrollPos] = useState(0);
 
-  const watchScrolling = useCallback((e: any) => {
+  function onScroll(e: any): void {
     const window = e.currentTarget;
-
     setScrollPos(window.pageYOffset);
-  }, [scrollPos]);
+  }
 
   useEffect(() => {
-    setScrollPos(window.pageYOffset);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('scroll', watchScrolling);
+    window.addEventListener('scroll', onScroll);
 
     return (): void => {
-      window.removeEventListener('scroll', watchScrolling);
+      window.removeEventListener('scroll', onScroll);
     };
-  }, [watchScrolling]);
+  }, []);
 
   return (
     <div id="preact_root" className={"overflow-hidden relative"}>
