@@ -29,7 +29,7 @@
     "preact": "^10.3.1",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1",
-    "tailwindcss": "^2.2.19",
+    "tailwindcss": "^3.0.24",
     "yarn": "^1.22.18"
   },
   "devDependencies": {
