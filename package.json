@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@vercel/analytics": "^1.0.2",
     "add": "^2.0.6",
     "preact": "^10.11.0",
     "preact-render-to-string": "^5.2.4",
