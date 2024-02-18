@@ -3,7 +3,7 @@
   "name": "stromberg-quotes",
   "version": "1.0.0",
   "engines": {
-    "node": "20.x"
+    "node": "18.x"
   },
   "author": {
     "name": "Philipp Meissner",
