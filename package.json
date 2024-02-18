@@ -2,6 +2,9 @@
   "private": true,
   "name": "stromberg-quotes",
   "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "author": {
     "name": "Philipp Meissner",
     "url": "https://philippmeissner.dev"
