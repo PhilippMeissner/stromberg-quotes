@@ -14,8 +14,7 @@ const Imprint: FunctionalComponent = () => {
         24118 Kiel</p>
 
       <h2>Kontakt</h2>
-      <p>Telefon: 01724173337<br />
-        E-Mail: admin@philippmeissner.dev</p>
+      <p>E-Mail: admin@philippmeissner.dev</p>
 
       <h2>Redaktionell verantwortlich</h2>
       <p>Die dargestellten Zitate stammen von der &ouml;ffentlichen API &quot;https://stromberg-api.de&quot;. Die Verantwortlichen f&uuml;r diese Inhalte k&ouml;nnen hier eingesehen werden: <a href="https://stromberg-api.de/Impressum">https://stromberg-api.de/Impressum</a></p>
