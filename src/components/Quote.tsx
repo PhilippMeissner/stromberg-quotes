@@ -20,17 +20,13 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const QUOTE_API_URL = process.env.PREACT_APP_QUOTE_API_URL;
-
 const Quote: FunctionalComponent = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
     window.scrollTo({top: 0, behavior: 'smooth'});
 
-    if (!QUOTE_API_URL) throw new Error('PREACT_APP_QUOTE_API_URL not defined.');
-
-    fetch(QUOTE_API_URL)
+    fetch('/api/proxy')
       .then((res) => res.json())
       .then((resp: ApiQuoteResponse) => {
         setQuote({
