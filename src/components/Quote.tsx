@@ -1,5 +1,4 @@
-import {FunctionalComponent, h, Fragment} from 'preact';
-import {useEffect, useState} from 'preact/compat';
+import { FC, useEffect, useState } from 'react';
 import QuoteSkeleton from './QuoteSkeleton';
 
 interface Quote {
@@ -20,7 +19,7 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const Quote: FunctionalComponent = () => {
+const Quote: FC = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
 
   useEffect(() => {
