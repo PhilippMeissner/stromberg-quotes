@@ -18,7 +18,7 @@ const allowCors = fn => async (req, res) => {
 }
 
 const handler = (req, res) => {
-  let url = process.env.PREACT_APP_QUOTE_API_URL;
+  let url = process.env.QUOTE_API_URL;
 
   if (req.body && req.body.url) {
     url = req.body.url
