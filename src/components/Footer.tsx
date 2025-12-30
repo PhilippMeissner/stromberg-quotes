@@ -1,19 +1,19 @@
-import {FunctionalComponent, h} from 'preact';
-import {Link} from 'preact-router/match';
-import {APP_ROUTES} from '../routes';
+import { FC } from 'react';
+import { NavLink } from 'react-router-dom';
+import { APP_ROUTES } from '../routes';
 
-const Footer: FunctionalComponent = () => {
+const Footer: FC = () => {
   return (
     <div className="flex flex-col sm:flex-row flex-wrap justify-between md:justify-around items-center gap-2 py-8 px-14 text-white">
-      <Link activeClassName={'font-bold'} href={`/${APP_ROUTES.home.routeSlug}`}>
+      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.home.routeSlug}`}>
         {APP_ROUTES.home.label}
-      </Link>
-      <Link activeClassName={'font-bold'} href={`/${APP_ROUTES.imprint.routeSlug}`}>
+      </NavLink>
+      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.imprint.routeSlug}`}>
         {APP_ROUTES.imprint.label}
-      </Link>
-      <Link activeClassName={'font-bold'} href={`/${APP_ROUTES.gdpr.routeSlug}`}>
+      </NavLink>
+      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.gdpr.routeSlug}`}>
         {APP_ROUTES.gdpr.label}
-      </Link>
+      </NavLink>
     </div>
   );
 };

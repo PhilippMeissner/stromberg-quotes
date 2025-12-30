@@ -1,7 +1,6 @@
-import {FunctionalComponent, h} from 'preact';
-import {useEffect} from 'preact/compat';
+import { FC, useEffect } from 'react';
 
-const Imprint: FunctionalComponent = () => {
+const Imprint: FC = () => {
   useEffect(() => window.scrollTo({top: 0, behavior: 'smooth'}), []);
 
   return (

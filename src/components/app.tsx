@@ -1,19 +1,18 @@
-import {FunctionalComponent, h} from 'preact';
-import Router, {Route} from 'preact-router';
-import {useEffect, useState} from 'preact/compat';
-import {APP_ROUTES} from '../routes';
+import { FC, useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { APP_ROUTES } from '../routes';
 import Badge from './Badge';
 import Footer from './Footer';
 import Viewport from './Viewport';
 
 const NAVIGATION_HEIGHT_PIXELS = 150;
 
-const App: FunctionalComponent = () => {
+const App: FC = () => {
   const isProduction = process.env.NODE_ENV === 'production';
   const [scrollPos, setScrollPos] = useState(0);
 
-  function onScroll(e: any): void {
-    const window = e.currentTarget;
+  function onScroll(e: Event): void {
+    const window = e.currentTarget as Window;
     setScrollPos(window.pageYOffset);
   }
 
@@ -26,7 +25,7 @@ const App: FunctionalComponent = () => {
   }, []);
 
   return (
-    <div id="preact_root" className={"overflow-hidden relative"}>
+    <div id="app_root" className={"overflow-hidden relative"}>
       {!isProduction && <Viewport />}
       <Badge />
         <div className={`transition-all duration-500 ${scrollPos > NAVIGATION_HEIGHT_PIXELS ? 'opacity-100 animate-bounce-limited' : 'opacity-0'} fixed bottom-8 right-6 h-8 w-8 p-1 flex items-center justify-around text-white cursor-pointer border rounded-full`} onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
@@ -35,11 +34,11 @@ const App: FunctionalComponent = () => {
         </svg>
       </div>
       <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
-        <Router>
-          <Route path={`/${APP_ROUTES.home.routeSlug}`} component={APP_ROUTES.home.component} />
-          <Route path={`/${APP_ROUTES.imprint.routeSlug}`} component={APP_ROUTES.imprint.component} />
-          <Route path={`/${APP_ROUTES.gdpr.routeSlug}`} component={APP_ROUTES.gdpr.component} />
-        </Router>
+        <Routes>
+          <Route path={`/${APP_ROUTES.home.routeSlug}`} element={<APP_ROUTES.home.component />} />
+          <Route path={`/${APP_ROUTES.imprint.routeSlug}`} element={<APP_ROUTES.imprint.component />} />
+          <Route path={`/${APP_ROUTES.gdpr.routeSlug}`} element={<APP_ROUTES.gdpr.component />} />
+        </Routes>
         <Footer />
       </div>
     </div>

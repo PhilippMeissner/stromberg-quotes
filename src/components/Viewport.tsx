@@ -1,6 +1,6 @@
-import {FunctionalComponent, h} from 'preact';
+import { FC } from 'react';
 
-const Viewport: FunctionalComponent = () => {
+const Viewport: FC = () => {
   return (
     <span className={"absolute top-6 left-4 text-gray-400"}>
       <pre className="sm:hidden">base</pre>

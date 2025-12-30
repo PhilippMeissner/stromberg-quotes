@@ -1,6 +1,6 @@
-import {FunctionalComponent, h} from 'preact';
+import { FC } from 'react';
 
-const QuoteSkeleton: FunctionalComponent = () => {
+const QuoteSkeleton: FC = () => {
   return (
     <div
       className="min-h-screen w-screen p-20 flex flex-col justify-center text-white">

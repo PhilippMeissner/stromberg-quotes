@@ -1,6 +1,6 @@
-import {FunctionalComponent, h} from 'preact';
+import { FC } from 'react';
 
-const Badge: FunctionalComponent = () => {
+const Badge: FC = () => {
   return (
     <a href='https://dyve.agency/de' rel="nofollow noopener noreferrer" target='_blank'>
       <div
