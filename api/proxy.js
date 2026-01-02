@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 const allowCors = fn => async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true)
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -30,4 +28,4 @@ const handler = (req, res) => {
   .catch(e => res.send(e))
 }
 
-module.exports = allowCors(handler)
+export default allowCors(handler)

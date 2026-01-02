@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --min-width-badge: 250px;
+  --animate-bounce-limited: bounce 1s ease-in-out 3.5;
+}
 
 @layer base {
   html, body {
