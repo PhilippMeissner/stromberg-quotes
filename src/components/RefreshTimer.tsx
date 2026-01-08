@@ -6,9 +6,30 @@ interface RefreshTimerProps {
   isPaused?: boolean;
 }
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = typeof window.matchMedia === 'function'
+        ? window.matchMedia('(max-width: 768px)').matches
+        : false;
+      setIsMobile(isTouchDevice && isSmallScreen);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = false }) => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   const resetTimer = useCallback(() => {
     setSecondsLeft(duration);
@@ -19,8 +40,9 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     resetTimer();
   }, [onRefresh, resetTimer]);
 
+  // Timer only runs on desktop
   useEffect(() => {
-    if (isPaused || isHovered) return;
+    if (isMobile || isPaused || isHovered) return;
 
     const interval = setInterval(() => {
       setSecondsLeft((prev) => {
@@ -33,13 +55,41 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [duration, onRefresh, isPaused, isHovered]);
+  }, [duration, onRefresh, isPaused, isHovered, isMobile]);
 
   // Calculate progress - starts full and depletes over time
   const progress = (secondsLeft / duration) * 100;
   const circumference = 2 * Math.PI * 45; // radius = 45
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
+  // Mobile: simple refresh button without timer animation
+  if (isMobile) {
+    return (
+      <div className="flex items-center justify-center mt-8">
+        <button
+          onClick={handleManualRefresh}
+          className="w-16 h-16 cursor-pointer transition-all duration-300 active:scale-95 opacity-50 active:opacity-80 flex items-center justify-center"
+          aria-label="Neues Zitat laden"
+        >
+          <svg
+            className="w-8 h-8 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+        </button>
+      </div>
+    );
+  }
+
+  // Desktop: timer with animation
   return (
     <div className="flex items-center justify-center mt-8">
       <button
