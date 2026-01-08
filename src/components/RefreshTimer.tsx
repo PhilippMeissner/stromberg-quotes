@@ -57,46 +57,19 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     return () => clearInterval(interval);
   }, [duration, onRefresh, isPaused, isHovered, isMobile]);
 
-  // Calculate progress - starts full and depletes over time
-  const progress = (secondsLeft / duration) * 100;
+  // Calculate progress - on mobile always full, on desktop depletes over time
+  const progress = isMobile ? 100 : (secondsLeft / duration) * 100;
   const circumference = 2 * Math.PI * 45; // radius = 45
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
-  // Mobile: simple refresh button without timer animation
-  if (isMobile) {
-    return (
-      <div className="flex items-center justify-center mt-8">
-        <button
-          onClick={handleManualRefresh}
-          className="w-16 h-16 cursor-pointer transition-all duration-300 active:scale-95 opacity-50 active:opacity-80 flex items-center justify-center"
-          aria-label="Neues Zitat laden"
-        >
-          <svg
-            className="w-8 h-8 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-        </button>
-      </div>
-    );
-  }
 
-  // Desktop: timer with animation
   return (
     <div className="flex items-center justify-center mt-8">
       <button
         onClick={handleManualRefresh}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="relative w-16 h-16 cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95 opacity-50 hover:opacity-80"
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={() => !isMobile && setIsHovered(false)}
+        className={`relative w-16 h-16 cursor-pointer transition-all duration-300 active:scale-95 opacity-50 ${isMobile ? 'active:opacity-80' : 'hover:scale-110 hover:opacity-80'}`}
         aria-label="Neues Zitat laden"
       >
         <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
@@ -120,12 +93,12 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
-            className="transition-all duration-1000 ease-linear"
+            className={isMobile ? '' : 'transition-all duration-1000 ease-linear'}
           />
         </svg>
 
-        {/* Refresh icon - visible on hover */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Refresh icon - always visible */}
+        <div className="absolute inset-0 flex items-center justify-center">
           <svg
             className="w-6 h-6 text-gray-400"
             fill="none"

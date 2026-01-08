@@ -60,10 +60,10 @@ const Quote: FC = () => {
 
   return (
     <>
-      {!quote &&
+      {(!quote || isLoading) &&
         <QuoteSkeleton />
       }
-      {quote &&
+      {quote && !isLoading &&
         <div
           className="min-h-screen w-screen p-10 md:p-20 lg:p-32 flex flex-col justify-center md:items-center md:text-center text-white">
           <div
