@@ -20,7 +20,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
   }, [onRefresh, resetTimer]);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || isHovered) return;
 
     const interval = setInterval(() => {
       setSecondsLeft((prev) => {
@@ -33,7 +33,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [duration, onRefresh, isPaused]);
+  }, [duration, onRefresh, isPaused, isHovered]);
 
   // Calculate progress - starts full and depletes over time
   const progress = (secondsLeft / duration) * 100;
