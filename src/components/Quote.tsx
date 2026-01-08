@@ -20,7 +20,7 @@ interface ApiQuoteResponse {
   } | null;
 }
 
-const REFRESH_INTERVAL_SECONDS = 10;
+const REFRESH_INTERVAL_SECONDS = 15;
 
 const Quote: FC = () => {
   const [quote, setQuote] = useState<Quote | undefined>(undefined);
