@@ -224,7 +224,7 @@ describe('RefreshTimer - Progress indicator', () => {
     vi.clearAllMocks();
   });
 
-  it('should have transition classes on progress circle for desktop', () => {
+  it('should have transition classes on progress circle when timer is active', () => {
     const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
 
     const circles = container.querySelectorAll('circle');
@@ -232,6 +232,34 @@ describe('RefreshTimer - Progress indicator', () => {
 
     expect(progressCircle.className.baseVal).toContain('transition-all');
     expect(progressCircle.className.baseVal).toContain('duration-1000');
+  });
+
+  it('should remove transition classes immediately when hovered for instant pause', () => {
+    const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    const button = screen.getByRole('button');
+    const circles = container.querySelectorAll('circle');
+    const progressCircle = circles[1];
+
+    expect(progressCircle.className.baseVal).toContain('transition-all');
+
+    fireEvent.mouseEnter(button);
+
+    expect(progressCircle.className.baseVal).not.toContain('transition-all');
+  });
+
+  it('should restore transition classes when mouse leaves', () => {
+    const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    const button = screen.getByRole('button');
+    const circles = container.querySelectorAll('circle');
+    const progressCircle = circles[1];
+
+    fireEvent.mouseEnter(button);
+    expect(progressCircle.className.baseVal).not.toContain('transition-all');
+
+    fireEvent.mouseLeave(button);
+    expect(progressCircle.className.baseVal).toContain('transition-all');
   });
 
   it('should not have transition classes on mobile', () => {
@@ -243,5 +271,78 @@ describe('RefreshTimer - Progress indicator', () => {
     const progressCircle = circles[1];
 
     expect(progressCircle.className.baseVal).not.toContain('transition-all');
+  });
+});
+
+describe('RefreshTimer - Mobile ping animation', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    mockUseIsMobile.mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.clearAllMocks();
+  });
+
+  it('should not have ping animation initially on mobile', () => {
+    const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    const pingElement = container.querySelector('.animate-ping-soft');
+
+    expect(pingElement).not.toBeInTheDocument();
+  });
+
+  it('should add ping animation after delay on mobile', () => {
+    const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    const pingElement = container.querySelector('.animate-ping-soft');
+
+    expect(pingElement).toBeInTheDocument();
+  });
+
+  it('should remove ping animation when manually refreshed', () => {
+    const onRefresh = vi.fn();
+    const { container } = render(<RefreshTimer duration={15} onRefresh={onRefresh} />);
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(container.querySelector('.animate-ping-soft')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(container.querySelector('.animate-ping-soft')).not.toBeInTheDocument();
+  });
+
+  it('should not have ping animation on desktop', () => {
+    mockUseIsMobile.mockReturnValue(false);
+
+    const { container } = render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    const pingElement = container.querySelector('.animate-ping-soft');
+
+    expect(pingElement).not.toBeInTheDocument();
+  });
+
+  it('should keep button visible during ping animation', () => {
+    render(<RefreshTimer duration={15} onRefresh={vi.fn()} />);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    const button = screen.getByRole('button');
+
+    expect(button).toBeVisible();
   });
 });

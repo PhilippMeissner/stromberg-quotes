@@ -1,4 +1,4 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { useIsMobile, useInterval } from '../hooks';
 
 interface RefreshTimerProps {
@@ -9,10 +9,12 @@ interface RefreshTimerProps {
 
 const CIRCLE_RADIUS = 45;
 const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
+const MOBILE_PULSE_DELAY_MS = 6000;
 
 const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = false }) => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [isHovered, setIsHovered] = useState(false);
+  const [shouldPulse, setShouldPulse] = useState(false);
   const isMobile = useIsMobile();
 
   const resetTimer = useCallback(() => {
@@ -22,6 +24,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
   const handleManualRefresh = useCallback(() => {
     onRefresh();
     resetTimer();
+    setShouldPulse(false);
   }, [onRefresh, resetTimer]);
 
   const isTimerActive = !isMobile && !isPaused && !isHovered;
@@ -36,18 +39,32 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     });
   }, isTimerActive ? 1000 : null);
 
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const timeout = setTimeout(() => {
+      setShouldPulse(true);
+    }, MOBILE_PULSE_DELAY_MS);
+
+    return () => clearTimeout(timeout);
+  }, [isMobile]);
+
   const progress = isMobile ? 100 : (secondsLeft / duration) * 100;
   const strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
 
   return (
     <div className="flex items-center justify-center mt-8">
-      <button
-        onClick={handleManualRefresh}
-        onMouseEnter={() => !isMobile && setIsHovered(true)}
-        onMouseLeave={() => !isMobile && setIsHovered(false)}
-        className={`relative w-16 h-16 cursor-pointer transition-all duration-300 active:scale-95 opacity-50 ${isMobile ? 'active:opacity-80' : 'hover:scale-110 hover:opacity-80'}`}
-        aria-label="Neues Zitat laden"
-      >
+      <div className="relative w-16 h-16">
+        {shouldPulse && isMobile && (
+          <span className="absolute inset-0 w-16 h-16 rounded-full border-2 border-gray-400 animate-ping-soft" />
+        )}
+        <button
+          onClick={handleManualRefresh}
+          onMouseEnter={() => !isMobile && setIsHovered(true)}
+          onMouseLeave={() => !isMobile && setIsHovered(false)}
+          className={`relative w-16 h-16 cursor-pointer transition-transform duration-300 active:scale-95 opacity-50 ${isMobile ? 'active:opacity-80' : 'hover:scale-110 hover:opacity-80'}`}
+          aria-label="Neues Zitat laden"
+        >
         <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
           <circle
             cx="50"
@@ -67,7 +84,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={strokeDashoffset}
-            className={isMobile ? '' : 'transition-all duration-1000 ease-linear'}
+            className={isTimerActive ? 'transition-all duration-1000 ease-linear' : ''}
           />
         </svg>
 
@@ -87,6 +104,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
           </svg>
         </div>
       </button>
+      </div>
     </div>
   );
 };
