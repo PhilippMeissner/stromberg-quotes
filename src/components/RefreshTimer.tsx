@@ -1,30 +1,14 @@
-import { FC, useEffect, useState, useCallback } from 'react';
+import { FC, useState, useCallback } from 'react';
+import { useIsMobile, useInterval } from '../hooks';
 
 interface RefreshTimerProps {
-  duration: number; // in seconds
+  duration: number;
   onRefresh: () => void;
   isPaused?: boolean;
 }
 
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isSmallScreen = typeof window.matchMedia === 'function'
-        ? window.matchMedia('(max-width: 768px)').matches
-        : false;
-      setIsMobile(isTouchDevice && isSmallScreen);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
-};
+const CIRCLE_RADIUS = 45;
+const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = false }) => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
@@ -40,28 +24,20 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
     resetTimer();
   }, [onRefresh, resetTimer]);
 
-  // Timer only runs on desktop
-  useEffect(() => {
-    if (isMobile || isPaused || isHovered) return;
+  const isTimerActive = !isMobile && !isPaused && !isHovered;
 
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          onRefresh();
-          return duration;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  useInterval(() => {
+    setSecondsLeft((prev) => {
+      if (prev <= 1) {
+        onRefresh();
+        return duration;
+      }
+      return prev - 1;
+    });
+  }, isTimerActive ? 1000 : null);
 
-    return () => clearInterval(interval);
-  }, [duration, onRefresh, isPaused, isHovered, isMobile]);
-
-  // Calculate progress - on mobile always full, on desktop depletes over time
   const progress = isMobile ? 100 : (secondsLeft / duration) * 100;
-  const circumference = 2 * Math.PI * 45; // radius = 45
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
+  const strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
 
   return (
     <div className="flex items-center justify-center mt-8">
@@ -73,31 +49,28 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
         aria-label="Neues Zitat laden"
       >
         <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
-          {/* Track */}
           <circle
             cx="50"
             cy="50"
-            r="45"
+            r={CIRCLE_RADIUS}
             fill="none"
             stroke="rgba(75, 85, 99, 0.3)"
             strokeWidth="4"
           />
-          {/* Progress */}
           <circle
             cx="50"
             cy="50"
-            r="45"
+            r={CIRCLE_RADIUS}
             fill="none"
             stroke="rgba(156, 163, 175, 0.6)"
             strokeWidth="4"
             strokeLinecap="round"
-            strokeDasharray={circumference}
+            strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={strokeDashoffset}
             className={isMobile ? '' : 'transition-all duration-1000 ease-linear'}
           />
         </svg>
 
-        {/* Refresh icon - always visible */}
         <div className="absolute inset-0 flex items-center justify-center">
           <svg
             className="w-6 h-6 text-gray-400"
