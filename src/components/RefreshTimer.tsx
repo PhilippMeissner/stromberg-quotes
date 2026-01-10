@@ -1,34 +1,20 @@
-import { FC, useEffect, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
+import { useIsMobile, useInterval } from '../hooks';
 
 interface RefreshTimerProps {
-  duration: number; // in seconds
+  duration: number;
   onRefresh: () => void;
   isPaused?: boolean;
 }
 
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isSmallScreen = typeof window.matchMedia === 'function'
-        ? window.matchMedia('(max-width: 768px)').matches
-        : false;
-      setIsMobile(isTouchDevice && isSmallScreen);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
-};
+const CIRCLE_RADIUS = 45;
+const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
+const MOBILE_PULSE_DELAY_MS = 6000;
 
 const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = false }) => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [isHovered, setIsHovered] = useState(false);
+  const [shouldPulse, setShouldPulse] = useState(false);
   const isMobile = useIsMobile();
 
   const resetTimer = useCallback(() => {
@@ -38,66 +24,70 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
   const handleManualRefresh = useCallback(() => {
     onRefresh();
     resetTimer();
+    setShouldPulse(false);
   }, [onRefresh, resetTimer]);
 
-  // Timer only runs on desktop
+  const isTimerActive = !isMobile && !isPaused && !isHovered;
+
+  useInterval(() => {
+    setSecondsLeft((prev) => {
+      if (prev <= 1) {
+        onRefresh();
+        return duration;
+      }
+      return prev - 1;
+    });
+  }, isTimerActive ? 1000 : null);
+
   useEffect(() => {
-    if (isMobile || isPaused || isHovered) return;
+    if (!isMobile) return;
 
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          onRefresh();
-          return duration;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const timeout = setTimeout(() => {
+      setShouldPulse(true);
+    }, MOBILE_PULSE_DELAY_MS);
 
-    return () => clearInterval(interval);
-  }, [duration, onRefresh, isPaused, isHovered, isMobile]);
+    return () => clearTimeout(timeout);
+  }, [isMobile]);
 
-  // Calculate progress - on mobile always full, on desktop depletes over time
   const progress = isMobile ? 100 : (secondsLeft / duration) * 100;
-  const circumference = 2 * Math.PI * 45; // radius = 45
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
+  const strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
 
   return (
     <div className="flex items-center justify-center mt-8">
-      <button
-        onClick={handleManualRefresh}
-        onMouseEnter={() => !isMobile && setIsHovered(true)}
-        onMouseLeave={() => !isMobile && setIsHovered(false)}
-        className={`relative w-16 h-16 cursor-pointer transition-all duration-300 active:scale-95 opacity-50 ${isMobile ? 'active:opacity-80' : 'hover:scale-110 hover:opacity-80'}`}
-        aria-label="Neues Zitat laden"
-      >
+      <div className="relative w-16 h-16">
+        {shouldPulse && isMobile && (
+          <span className="absolute inset-0 w-16 h-16 rounded-full border-2 border-gray-400 animate-ping-soft" />
+        )}
+        <button
+          onClick={handleManualRefresh}
+          onMouseEnter={() => !isMobile && setIsHovered(true)}
+          onMouseLeave={() => !isMobile && setIsHovered(false)}
+          className={`relative w-16 h-16 cursor-pointer transition-transform duration-300 active:scale-95 opacity-50 ${isMobile ? 'active:opacity-80' : 'hover:scale-110 hover:opacity-80'}`}
+          aria-label="Neues Zitat laden"
+        >
         <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
-          {/* Track */}
           <circle
             cx="50"
             cy="50"
-            r="45"
+            r={CIRCLE_RADIUS}
             fill="none"
             stroke="rgba(75, 85, 99, 0.3)"
             strokeWidth="4"
           />
-          {/* Progress */}
           <circle
             cx="50"
             cy="50"
-            r="45"
+            r={CIRCLE_RADIUS}
             fill="none"
             stroke="rgba(156, 163, 175, 0.6)"
             strokeWidth="4"
             strokeLinecap="round"
-            strokeDasharray={circumference}
+            strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={strokeDashoffset}
-            className={isMobile ? '' : 'transition-all duration-1000 ease-linear'}
+            className={isTimerActive ? 'transition-all duration-1000 ease-linear' : ''}
           />
         </svg>
 
-        {/* Refresh icon - always visible */}
         <div className="absolute inset-0 flex items-center justify-center">
           <svg
             className="w-6 h-6 text-gray-400"
@@ -114,6 +104,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
           </svg>
         </div>
       </button>
+      </div>
     </div>
   );
 };

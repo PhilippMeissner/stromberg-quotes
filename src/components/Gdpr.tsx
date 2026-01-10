@@ -1,7 +1,8 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
+import { useScrollToTopOnMount } from '../hooks';
 
 const Gdpr: FC = () => {
-  useEffect(() => window.scrollTo({top: 0, behavior: 'smooth'}), []);
+  useScrollToTopOnMount();
 
   return (
     <div className={"text-white p-20"}>
