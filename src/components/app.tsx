@@ -5,6 +5,7 @@ import Badge from './Badge';
 import Footer from './Footer';
 import Viewport from './Viewport';
 import { useEventListener, useScrollToTop } from '../hooks';
+import { ArrowUpIcon } from '../icons';
 
 const NAVIGATION_HEIGHT_PIXELS = 150;
 
@@ -25,9 +26,7 @@ const App: FC = () => {
       {!isProduction && <Viewport />}
       <Badge />
         <div className={`transition-all duration-500 ${scrollPos > NAVIGATION_HEIGHT_PIXELS ? 'opacity-100 animate-bounce-limited' : 'opacity-0'} fixed bottom-8 right-6 h-8 w-8 p-1 flex items-center justify-around text-white cursor-pointer border rounded-full`} onClick={scrollToTop}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-        </svg>
+        <ArrowUpIcon />
       </div>
       <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
         <Routes>
