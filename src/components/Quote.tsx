@@ -1,6 +1,7 @@
 import { FC, useEffect, useState, useCallback } from 'react';
 import QuoteSkeleton from './QuoteSkeleton';
 import RefreshTimer from './RefreshTimer';
+import { useScrollToTopOnMount } from '../hooks';
 
 interface Quote {
   author: string;
@@ -27,11 +28,12 @@ const Quote: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  useScrollToTopOnMount();
+
   const fetchQuote = useCallback(async () => {
     setIsLoading(true);
     setIsTransitioning(true);
 
-    // Short delay for fade-out effect
     await new Promise(resolve => setTimeout(resolve, 300));
 
     try {
@@ -47,16 +49,13 @@ const Quote: FC = () => {
       console.error('Failed to fetch quote:', error);
     } finally {
       setIsLoading(false);
-      // Small delay before showing new quote
       setTimeout(() => setIsTransitioning(false), 100);
     }
   }, []);
 
   useEffect(() => {
-    window.scrollTo({top: 0, behavior: 'smooth'});
     fetchQuote();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchQuote]);
 
   return (
     <>
