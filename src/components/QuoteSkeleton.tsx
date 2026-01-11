@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
-const QuoteSkeleton: FC = () => {
+const QuoteSkeleton: FC = memo(() => {
   return (
     <div
       data-testid="quote-skeleton"
@@ -20,6 +20,6 @@ const QuoteSkeleton: FC = () => {
       </div>
     </div>
   );
-}
+});
 
 export default QuoteSkeleton;

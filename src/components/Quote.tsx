@@ -1,43 +1,31 @@
 import { FC, useEffect, useState, useCallback } from 'react';
 import QuoteSkeleton from './QuoteSkeleton';
 import RefreshTimer from './RefreshTimer';
-import { useScrollToTopOnMount } from '../hooks';
-
-interface Quote {
-  author: string;
-  text: string;
-  season?: string;
-  episode?: string;
-}
-
-interface ApiQuoteResponse {
-  quote: string;
-  character: {
-    name: string;
-  } | null;
-  episode: {
-    season: number;
-    episode: number;
-  } | null;
-}
-
-const REFRESH_INTERVAL_SECONDS = 15;
+import { useScrollToTopOnMount, useDocumentTitle } from '../hooks';
+import { TIMERS } from '../constants';
+import type { Quote as QuoteType, ApiQuoteResponse } from '../types';
 
 const Quote: FC = () => {
-  const [quote, setQuote] = useState<Quote | undefined>(undefined);
+  const [quote, setQuote] = useState<QuoteType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useScrollToTopOnMount();
+  useDocumentTitle();
 
   const fetchQuote = useCallback(async () => {
     setIsLoading(true);
     setIsTransitioning(true);
+    setError(null);
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
     try {
       const res = await fetch('/api/proxy');
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
       const resp: ApiQuoteResponse = await res.json();
       setQuote({
         author: resp?.character?.name || 'Bernd Stromberg',
@@ -45,8 +33,9 @@ const Quote: FC = () => {
         season: resp?.episode?.season.toString(),
         episode: resp?.episode?.episode.toString(),
       });
-    } catch (error) {
-      console.error('Failed to fetch quote:', error);
+    } catch (err) {
+      console.error('Failed to fetch quote:', err);
+      setError('Zitat konnte nicht geladen werden.');
     } finally {
       setIsLoading(false);
       setTimeout(() => setIsTransitioning(false), 100);
@@ -59,11 +48,24 @@ const Quote: FC = () => {
 
   return (
     <>
-      {(!quote || isLoading) &&
+      {(!quote || isLoading) && !error &&
         <QuoteSkeleton />
       }
-      {quote && !isLoading &&
-        <div
+      {error && !isLoading && (
+        <div className="min-h-screen w-screen p-10 md:p-20 flex flex-col justify-center items-center text-center text-white">
+          <p className="text-xl md:text-2xl text-gray-300 mb-6">{error}</p>
+          <button
+            onClick={fetchQuote}
+            className="px-6 py-2 border border-white rounded-full hover:bg-white hover:text-gray-900 transition-colors"
+          >
+            Erneut versuchen
+          </button>
+        </div>
+      )}
+      {quote && !isLoading && !error &&
+        <article
+          aria-live="polite"
+          aria-atomic="true"
           className="min-h-screen w-screen p-10 md:p-20 lg:p-32 flex flex-col justify-center md:items-center md:text-center text-white">
           <div
             className={`transition-all duration-300 ease-in-out ${
@@ -72,22 +74,23 @@ const Quote: FC = () => {
                 : 'opacity-100 translate-y-0 scale-100'
             }`}
           >
-            <div className="text-2xl md:text-4xl break-words leading-relaxed">{quote.text}</div>
-            <div className="pt-8 text-sm md:text-base text-gray-300">{quote.author}</div>
-            <div className="text-xs md:text-base text-gray-400">
-              {quote.season && quote.episode &&
-                <span>(S {quote.season}, E {quote.episode})</span>
-              }
-            </div>
+            <blockquote className="text-2xl md:text-4xl break-words leading-relaxed">
+              {quote.text}
+            </blockquote>
+            <p className="pt-8 text-sm md:text-base text-gray-300">— {quote.author}</p>
+            {quote.season && quote.episode && (
+              <p className="text-xs md:text-base text-gray-400">
+                (Staffel {quote.season}, Episode {quote.episode})
+              </p>
+            )}
           </div>
 
-          {/* Auto-refresh timer */}
           <RefreshTimer
-            duration={REFRESH_INTERVAL_SECONDS}
+            duration={TIMERS.REFRESH_INTERVAL_SECONDS}
             onRefresh={fetchQuote}
             isPaused={isLoading}
           />
-        </div>
+        </article>
       }
     </>
   );

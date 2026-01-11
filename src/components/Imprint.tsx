@@ -1,11 +1,12 @@
 import { FC } from 'react';
-import { useScrollToTopOnMount } from '../hooks';
+import { useScrollToTopOnMount, useDocumentTitle } from '../hooks';
 
 const Imprint: FC = () => {
   useScrollToTopOnMount();
+  useDocumentTitle('Impressum');
 
   return (
-    <div className={"text-white p-20 h-screen"}>
+    <article className={"text-white p-20 h-screen"}>
       <h1>Impressum</h1>
       <br />
 
@@ -31,7 +32,7 @@ const Imprint: FC = () => {
         rel="nofollow noopener noreferrer" target="_blank"
         href="https://www.e-recht24.de/impressum-generator.html">https://www.e-recht24.de/impressum-generator.html</a>
       </p>
-    </div>
+    </article>
   );
 };
 

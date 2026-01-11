@@ -1,21 +1,23 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { APP_ROUTES } from '../routes';
 
-const Footer: FC = () => {
+const Footer: FC = memo(() => {
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap justify-between md:justify-around items-center gap-2 py-8 px-14 text-white">
-      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.home.routeSlug}`}>
-        {APP_ROUTES.home.label}
-      </NavLink>
-      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.imprint.routeSlug}`}>
-        {APP_ROUTES.imprint.label}
-      </NavLink>
-      <NavLink className={({ isActive }) => isActive ? 'font-bold' : ''} to={`/${APP_ROUTES.gdpr.routeSlug}`}>
-        {APP_ROUTES.gdpr.label}
-      </NavLink>
-    </div>
+    <footer className="py-8 px-14 text-white">
+      <nav aria-label="Hauptnavigation" className="flex flex-col sm:flex-row flex-wrap justify-between md:justify-around items-center gap-2">
+        {Object.values(APP_ROUTES).map((route) => (
+          <NavLink
+            key={route.routeSlug}
+            className={({ isActive }) => isActive ? 'font-bold' : ''}
+            to={`/${route.routeSlug}`}
+          >
+            {route.label}
+          </NavLink>
+        ))}
+      </nav>
+    </footer>
   );
-};
+});
 
 export default Footer;
