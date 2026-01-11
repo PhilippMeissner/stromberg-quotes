@@ -3,6 +3,15 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../components/app';
 
+vi.mock('../hooks', () => ({
+  useScrollToTopOnMount: vi.fn(),
+  useScrollToTop: vi.fn(() => vi.fn()),
+  useDocumentTitle: vi.fn(),
+  useEventListener: vi.fn(),
+  useIsMobile: vi.fn(() => false),
+  useInterval: vi.fn(),
+}));
+
 const mockQuoteResponse = {
   quote: 'Test quote',
   character: { name: 'Test Character' },
@@ -12,6 +21,7 @@ const mockQuoteResponse = {
 describe('App', () => {
   beforeEach(() => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve(mockQuoteResponse),
     } as Response);
   });

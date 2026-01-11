@@ -10,6 +10,7 @@ const mockQuoteResponse = {
 
 vi.mock('../hooks', () => ({
   useScrollToTopOnMount: vi.fn(),
+  useDocumentTitle: vi.fn(),
   useIsMobile: vi.fn(() => false),
   useInterval: vi.fn(),
 }));
@@ -17,6 +18,7 @@ vi.mock('../hooks', () => ({
 describe('Quote', () => {
   beforeEach(() => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve(mockQuoteResponse),
     } as Response);
   });
@@ -43,7 +45,7 @@ describe('Quote', () => {
     render(<Quote />);
 
     await waitFor(() => {
-      expect(screen.getByText('Bernd Stromberg')).toBeInTheDocument();
+      expect(screen.getByText(/Bernd Stromberg/)).toBeInTheDocument();
     }, { timeout: 2000 });
   });
 
@@ -51,7 +53,7 @@ describe('Quote', () => {
     render(<Quote />);
 
     await waitFor(() => {
-      expect(screen.getByText('(S 2, E 5)')).toBeInTheDocument();
+      expect(screen.getByText('(Staffel 2, Episode 5)')).toBeInTheDocument();
     }, { timeout: 2000 });
   });
 
@@ -65,6 +67,7 @@ describe('Quote', () => {
 
   it('should use default author when character is null', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: () => Promise.resolve({
         quote: 'Ein Zitat ohne Autor',
         character: null,
@@ -75,12 +78,13 @@ describe('Quote', () => {
     render(<Quote />);
 
     await waitFor(() => {
-      expect(screen.getByText('Bernd Stromberg')).toBeInTheDocument();
+      expect(screen.getByText(/Bernd Stromberg/)).toBeInTheDocument();
     }, { timeout: 2000 });
   });
 
   it('should not display episode info when not available', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: () => Promise.resolve({
         quote: 'Ein Zitat ohne Episode',
         character: { name: 'Ulf Steinke' },
@@ -91,10 +95,10 @@ describe('Quote', () => {
     render(<Quote />);
 
     await waitFor(() => {
-      expect(screen.getByText('Ulf Steinke')).toBeInTheDocument();
+      expect(screen.getByText(/Ulf Steinke/)).toBeInTheDocument();
     }, { timeout: 2000 });
 
-    expect(screen.queryByText(/\(S.*E.*\)/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\(Staffel.*Episode.*\)/)).not.toBeInTheDocument();
   });
 
   it('should handle fetch errors gracefully', async () => {
