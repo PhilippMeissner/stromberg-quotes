@@ -1,14 +1,13 @@
 import { FC, useState, useCallback, useEffect } from 'react';
 import { useIsMobile, useInterval } from '../hooks';
 import { CircularProgress, RefreshIcon } from '../icons';
+import { TIMERS } from '../constants';
 
 interface RefreshTimerProps {
   duration: number;
   onRefresh: () => void;
   isPaused?: boolean;
 }
-
-const MOBILE_PULSE_DELAY_MS = 6000;
 
 const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = false }) => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
@@ -43,7 +42,7 @@ const RefreshTimer: FC<RefreshTimerProps> = ({ duration, onRefresh, isPaused = f
 
     const timeout = setTimeout(() => {
       setShouldPulse(true);
-    }, MOBILE_PULSE_DELAY_MS);
+    }, TIMERS.MOBILE_PULSE_DELAY_MS);
 
     return () => clearTimeout(timeout);
   }, [isMobile]);

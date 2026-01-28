@@ -4,6 +4,7 @@ import Imprint from '../components/Imprint';
 
 vi.mock('../hooks', () => ({
   useScrollToTopOnMount: vi.fn(),
+  useDocumentTitle: vi.fn(),
 }));
 
 describe('Imprint', () => {

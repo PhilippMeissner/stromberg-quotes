@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
-const Badge: FC = () => {
+const Badge: FC = memo(() => {
   return (
     <a href='https://dyve.agency/de' rel="nofollow noopener noreferrer" target='_blank'>
       <div
@@ -9,6 +9,6 @@ const Badge: FC = () => {
       </div>
     </a>
   );
-};
+});
 
 export default Badge;

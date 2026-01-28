@@ -1,0 +1,9 @@
+export const TIMERS = {
+  REFRESH_INTERVAL_SECONDS: 15,
+  MOBILE_PULSE_DELAY_MS: 6000,
+  TRANSITION_MS: 300,
+} as const;
+
+export const LAYOUT = {
+  SCROLL_NAV_HEIGHT_PIXELS: 150,
+} as const;

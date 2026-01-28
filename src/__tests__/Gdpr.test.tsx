@@ -4,6 +4,7 @@ import Gdpr from '../components/Gdpr';
 
 vi.mock('../hooks', () => ({
   useScrollToTopOnMount: vi.fn(),
+  useDocumentTitle: vi.fn(),
 }));
 
 describe('Gdpr', () => {
